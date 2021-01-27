@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
+    <!-- roundedbar charts from github -Jedtrow- https://github.com/jedtrow/Chart.js-Rounded-Bar-Charts -->
+    <script src="./Chart.roundedBarCharts.js"></script>
+
+    <!-- bootstrap 5-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!--bootstrap-->
+
+    <!-- eel js -->
+    <script type="text/javascript" src="/eel.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+    <title>Speech Emotion Recognition</title>
+</head>
+
+<body>
+    <main>
+        <!-- <div class="title display-1 lh-lg">Speech Emotion Prediction</div> -->
+        <div class="grid-container position-absolute top-50 start-50 translate-middle">
+            <div class="title display-1 lh-lg">Speech Emotion Prediction</div>
+            <div class="track">
+                <span class="display-4 audio_title text comp">Audio file</span>
+                <audio id="audio" class="audio_player comp" src="" type="audio/wav" id="source" controls></audio>
+                <div class="nav-link dropdown audio_drop comp" id="drop-down">
+                    <button class="btn btn-info dropdown-toggle drop" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Choose an audio file
+                    </button>
+                    <ul class="dropdown-menu" id="items" style="max-height: 300px; overflow:scroll">
+                    </ul>
+                </div>
+            </div>
+            <div class="realtime">
+                <span class="display-4 real_title text comp">Your voice</span>
+                <div class="real_controls">
+                    <button id="record" class="btn btn-danger rounded-circle comp">Record</button>
+                    <button id="stop" class="btn btn-outline-warning rounded-circle comp" disabled>stop</button>
+                </div>
+                <div class="real_indicator" class="comp">
+                    <div class="comp position-relative">
+                        <div class="comp position-absolute start-50 translate-middle-x">
+                            <div class="text-danger blink" id="blink-dot"></div>&nbsp;
+                            <time id="record-time" class="lh-lg m-1 comp time"></time>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="chart_container" class="chart">
+                <canvas id="myChart" style="position: relative;"></canvas>
+            </div>
+        </div>
+    </main>
+    
+
+    <script src="speech.js"></script>
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+</html>

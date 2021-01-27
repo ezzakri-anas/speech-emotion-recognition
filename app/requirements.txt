@@ -1,0 +1,6 @@
+tensorflow==2.4.0
+librosa==0.8.0
+matplotlib==3.2.1
+PyAudio==0.2.11
+numpy==1.18.2
+Eel==0.14.0
