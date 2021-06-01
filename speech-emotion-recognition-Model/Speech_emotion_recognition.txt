@@ -4,7 +4,7 @@
   "metadata": {
     "accelerator": "GPU",
     "colab": {
-      "name": "Speech emotion recognition.ipynb",
+      "name": "Speech_emotion_recognition.ipynb",
       "provenance": [],
       "collapsed_sections": []
     },
@@ -15,17 +15,26 @@
   },
   "cells": [
     {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "8iMwipS7szT-"
+      },
+      "source": [
+        ">Installing packages..."
+      ]
+    },
+    {
       "cell_type": "code",
       "metadata": {
         "id": "waIG3INOkSZ7"
       },
       "source": [
-        "!pip install tensorflow\r\n",
-        "!pip install numpy\r\n",
-        "!pip install matplotlib\r\n",
-        "!pip install sklearn\r\n",
-        "!pip install dropbox\r\n",
-        "!pip install librosa\r\n",
+        "!pip install tensorflow\n",
+        "!pip install numpy\n",
+        "!pip install matplotlib\n",
+        "!pip install sklearn\n",
+        "!pip install dropbox\n",
+        "!pip install librosa\n",
         "!pip install rarfile"
       ],
       "execution_count": null,
@@ -37,11 +46,11 @@
         "id": "jqHbDDELamd9"
       },
       "source": [
-        "import tensorflow as tf\r\n",
-        "\r\n",
+        "import tensorflow as tf\n",
+        "\n",
         "tf.compat.v1.enable_eager_execution()"
       ],
-      "execution_count": 2,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -50,18 +59,27 @@
         "id": "nMgIRM9Hkdli"
       },
       "source": [
-        "from sklearn.model_selection import train_test_split\r\n",
-        "import numpy as np\r\n",
-        "import matplotlib.pyplot as plt\r\n",
-        "import librosa as lb\r\n",
-        "import librosa.display\r\n",
-        "import random\r\n",
-        "import json\r\n",
-        "import os\r\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import librosa as lb\n",
+        "import librosa.display\n",
+        "import random\n",
+        "import json\n",
+        "import os\n",
         "from math import floor, ceil"
       ],
-      "execution_count": 3,
+      "execution_count": null,
       "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "kVrHWJmXs_Vf"
+      },
+      "source": [
+        "> Checking if GPU device is available"
+      ]
     },
     {
       "cell_type": "code",
@@ -73,13 +91,13 @@
         "outputId": "62169fb6-4375-4ec9-f73e-f57ebf9c07d9"
       },
       "source": [
-        "device_name = tf.test.gpu_device_name()\r\n",
-        "if device_name != \"/device:GPU:0\":\r\n",
-        "    raise SystemError(\"GPU device not found\")\r\n",
-        "    \r\n",
+        "device_name = tf.test.gpu_device_name()\n",
+        "if device_name != \"/device:GPU:0\":\n",
+        "    raise SystemError(\"GPU device not found\")\n",
+        "    \n",
         "print(\"Found GPU at: {}\".format(device_name))"
       ],
-      "execution_count": 4,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -91,12 +109,21 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "E1RWRHczuUwP"
+      },
+      "source": [
+        "> Connecting to google drive and importing training data"
+      ]
+    },
+    {
       "cell_type": "code",
       "metadata": {
         "id": "ecJmnH-jRuI-"
       },
       "source": [
-        "from google.colab import drive\r\n",
+        "from google.colab import drive\n",
         "drive.mount('/content/drive')"
       ],
       "execution_count": null,
@@ -108,12 +135,12 @@
         "id": "jg97ud30Rp2w"
       },
       "source": [
-        "import rarfile\r\n",
-        "\r\n",
-        "with rarfile.RarFile(\"/content/drive/MyDrive/Datasets/speech_emotion_data_rav_JL.rar\", \"r\") as zip_ref:\r\n",
+        "import rarfile\n",
+        "\n",
+        "with rarfile.RarFile(\"/content/drive/MyDrive/Datasets/speech_emotion_data_rav_JL.rar\", \"r\") as zip_ref:\n",
         "  zip_ref.extractall(\"speech_emotion_data_rav_JL\")"
       ],
-      "execution_count": 6,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -122,11 +149,11 @@
         "id": "sisMgNgzkgMs"
       },
       "source": [
-        "data = []\r\n",
-        "with open(\"speech_emotion_data_rav_JL/speech_emotion_data_rav_JL.json\", \"r\") as f:\r\n",
+        "data = []\n",
+        "with open(\"speech_emotion_data_rav_JL/speech_emotion_data_rav_JL.json\", \"r\") as f:\n",
         "    data = json.load(f)"
       ],
-      "execution_count": 7,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -135,11 +162,11 @@
         "id": "U8ab3jN-Bdr8"
       },
       "source": [
-        "random.seed(0)\r\n",
-        "\r\n",
+        "random.seed(0)\n",
+        "\n",
         "random.shuffle(data)"
       ],
-      "execution_count": 8,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -148,13 +175,13 @@
         "id": "gZaKCylYkkwt"
       },
       "source": [
-        "X_all, Y_all = [], []\r\n",
-        "\r\n",
-        "for item in data:\r\n",
-        "    X_all.append(item[\"feature\"])\r\n",
+        "X_all, Y_all = [], []\n",
+        "\n",
+        "for item in data:\n",
+        "    X_all.append(item[\"feature\"])\n",
         "    Y_all.append(item[\"label\"])"
       ],
-      "execution_count": 9,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -167,10 +194,10 @@
         "outputId": "2e612869-9b9b-426b-8c3f-875111269621"
       },
       "source": [
-        "print(len(X_all), len(Y_all))\r\n",
+        "print(len(X_all), len(Y_all))\n",
         "print(len(X_all[1]), len(Y_all[0]))"
       ],
-      "execution_count": 10,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -188,14 +215,14 @@
         "id": "omCzKQiyk34Y"
       },
       "source": [
-        "X_train, X_test, Y_train, Y_test = train_test_split(\r\n",
-        "    np.array(X_all, dtype=\"float32\").reshape((-1, 13, 130, 1)), \r\n",
-        "    np.array(Y_all, dtype=\"float32\").reshape((-1, 5)), \r\n",
-        "    test_size=0.30,\r\n",
-        "    random_state=42,\r\n",
+        "X_train, X_test, Y_train, Y_test = train_test_split(\n",
+        "    np.array(X_all, dtype=\"float32\").reshape((-1, 13, 130, 1)), \n",
+        "    np.array(Y_all, dtype=\"float32\").reshape((-1, 5)), \n",
+        "    test_size=0.30,\n",
+        "    random_state=42,\n",
         "    shuffle=True)"
       ],
-      "execution_count": 11,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -208,10 +235,10 @@
         "outputId": "a792cf05-15f4-4f03-acd4-da816c99f92c"
       },
       "source": [
-        "print(X_train.shape, Y_train.shape)\r\n",
+        "print(X_train.shape, Y_train.shape)\n",
         "print(X_test.shape, Y_test.shape)"
       ],
-      "execution_count": 12,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -229,34 +256,34 @@
         "id": "AKXlHWcZ0sDW"
       },
       "source": [
-        "def CreateModel():\r\n",
-        "    model = tf.keras.Sequential()\r\n",
-        "    dropout_prob = 0.4\r\n",
-        "    \r\n",
-        "    model.add(tf.keras.layers.BatchNormalization())\r\n",
-        "\r\n",
-        "    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=7, activation=\"tanh\", padding=\"same\", input_shape=(13, 130, 1)))\r\n",
-        "    model.add(tf.keras.layers.MaxPool2D())\r\n",
-        "    model.add(tf.keras.layers.Dropout(dropout_prob))\r\n",
-        "\r\n",
-        "    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=5, activation=\"tanh\", padding=\"same\"))\r\n",
-        "    model.add(tf.keras.layers.MaxPool2D())\r\n",
-        "    model.add(tf.keras.layers.Dropout(dropout_prob))\r\n",
-        "    \r\n",
-        "\r\n",
-        "    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=3, activation=\"tanh\", padding=\"same\"))\r\n",
-        "    model.add(tf.keras.layers.MaxPool2D())\r\n",
-        "    model.add(tf.keras.layers.Dropout(dropout_prob))\r\n",
-        "\r\n",
-        "    model.add(tf.keras.layers.Flatten())\r\n",
-        "\r\n",
-        "    # model.add(tf.keras.layers.Dense(units=50, activation=\"sigmoid\"))\r\n",
-        "    \r\n",
-        "    model.add(tf.keras.layers.Dense(units=5, activation=\"softmax\", name=\"output_layer\"))\r\n",
-        "    \r\n",
+        "def CreateModel():\n",
+        "    model = tf.keras.Sequential()\n",
+        "    dropout_prob = 0.4\n",
+        "    \n",
+        "    model.add(tf.keras.layers.BatchNormalization())\n",
+        "\n",
+        "    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=7, activation=\"tanh\", padding=\"same\", input_shape=(13, 130, 1)))\n",
+        "    model.add(tf.keras.layers.MaxPool2D())\n",
+        "    model.add(tf.keras.layers.Dropout(dropout_prob))\n",
+        "\n",
+        "    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=5, activation=\"tanh\", padding=\"same\"))\n",
+        "    model.add(tf.keras.layers.MaxPool2D())\n",
+        "    model.add(tf.keras.layers.Dropout(dropout_prob))\n",
+        "    \n",
+        "\n",
+        "    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=3, activation=\"tanh\", padding=\"same\"))\n",
+        "    model.add(tf.keras.layers.MaxPool2D())\n",
+        "    model.add(tf.keras.layers.Dropout(dropout_prob))\n",
+        "\n",
+        "    model.add(tf.keras.layers.Flatten())\n",
+        "\n",
+        "    # model.add(tf.keras.layers.Dense(units=50, activation=\"sigmoid\"))\n",
+        "    \n",
+        "    model.add(tf.keras.layers.Dense(units=5, activation=\"softmax\", name=\"output_layer\"))\n",
+        "    \n",
         "    return model"
       ],
-      "execution_count": 13,
+      "execution_count": null,
       "outputs": []
     },
     {
@@ -269,34 +296,34 @@
         "outputId": "b1eaeade-a5e7-4f40-a31e-14239c1c4f4e"
       },
       "source": [
-        "\r\n",
-        "model_checkpoint = tf.keras.callbacks.ModelCheckpoint(\r\n",
-        "    filepath=\"model_checkpoint_speech_lj_rav\",\r\n",
-        "    save_weights_only=False,\r\n",
-        "    monitor='val_accuracy',\r\n",
-        "    mode='max',\r\n",
-        "    save_best_only=True)\r\n",
-        "\r\n",
-        "\r\n",
-        "with tf.device(\"/gpu:0\"):\r\n",
-        "    Model = CreateModel()\r\n",
-        "\r\n",
-        "    Model.compile(\r\n",
-        "        loss=\"bce\",\r\n",
-        "        optimizer=tf.keras.optimizers.Adam(),\r\n",
-        "        metrics=[\"accuracy\"])\r\n",
-        "  \r\n",
-        "    # Model.summary()\r\n",
-        "\r\n",
-        "    history = Model.fit(x=X_train,\r\n",
-        "                        y=Y_train,\r\n",
-        "                        epochs=500,\r\n",
-        "                        batch_size=512,\r\n",
-        "                        validation_data=(X_test, Y_test),\r\n",
-        "                        shuffle=True,\r\n",
+        "\n",
+        "model_checkpoint = tf.keras.callbacks.ModelCheckpoint(\n",
+        "    filepath=\"model_checkpoint_speech_lj_rav\",\n",
+        "    save_weights_only=False,\n",
+        "    monitor='val_accuracy',\n",
+        "    mode='max',\n",
+        "    save_best_only=True)\n",
+        "\n",
+        "\n",
+        "with tf.device(\"/gpu:0\"):\n",
+        "    Model = CreateModel()\n",
+        "\n",
+        "    Model.compile(\n",
+        "        loss=\"bce\",\n",
+        "        optimizer=tf.keras.optimizers.Adam(),\n",
+        "        metrics=[\"accuracy\"])\n",
+        "  \n",
+        "    # Model.summary()\n",
+        "\n",
+        "    history = Model.fit(x=X_train,\n",
+        "                        y=Y_train,\n",
+        "                        epochs=500,\n",
+        "                        batch_size=512,\n",
+        "                        validation_data=(X_test, Y_test),\n",
+        "                        shuffle=True,\n",
         "                        callbacks=[model_checkpoint])"
       ],
-      "execution_count": 14,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -1386,7 +1413,7 @@
       "source": [
         "Model.summary()"
       ],
-      "execution_count": 15,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -1429,6 +1456,15 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "2EDyYoygu94d"
+      },
+      "source": [
+        ">Loading saved checkpoint model with highest val_accuracy"
+      ]
+    },
+    {
       "cell_type": "code",
       "metadata": {
         "id": "gi9AT9cXWxcX"
@@ -1436,8 +1472,17 @@
       "source": [
         "Model = tf.keras.models.load_model(\"model_checkpoint_speech_lj_rav\")"
       ],
-      "execution_count": 16,
+      "execution_count": null,
       "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "-63J7N97vQSQ"
+      },
+      "source": [
+        "> Evaluating Model accuracy on Validation data => getting 89% on testing data"
+      ]
     },
     {
       "cell_type": "code",
@@ -1449,11 +1494,11 @@
         "outputId": "8b1f4494-e0d1-45c1-afce-b5d31e7a21cf"
       },
       "source": [
-        "Model.evaluate(X_test, Y_test)\r\n",
-        "Model.evaluate(np.array(X_all, dtype=\"float32\").reshape((-1, 13, 130, 1)), \r\n",
+        "Model.evaluate(X_test, Y_test)\n",
+        "Model.evaluate(np.array(X_all, dtype=\"float32\").reshape((-1, 13, 130, 1)), \n",
         "               np.array(Y_all, dtype=\"float32\").reshape((-1, 5)))"
       ],
-      "execution_count": 17,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -1488,31 +1533,31 @@
         "outputId": "5a2c7f50-0cdd-4c93-84d9-8b8e10cf5202"
       },
       "source": [
-        "loss = history.history['loss']\r\n",
-        "val_loss = history.history['val_loss']\r\n",
-        "accuracy = history.history['accuracy']\r\n",
-        "val_accuracy = history.history['val_accuracy']\r\n",
-        "epochs = range(len(loss))\r\n",
-        "\r\n",
-        "fig = plt.figure(figsize=(12,6))\r\n",
-        "gs = fig.add_gridspec(1, 2)\r\n",
-        "ax1 = fig.add_subplot(gs[0, 0])\r\n",
-        "ax2 = fig.add_subplot(gs[0, 1])\r\n",
-        "\r\n",
-        "ax1.plot(epochs, loss, 'r', label='Training')\r\n",
-        "ax1.plot(epochs, val_loss, 'b', label='Validation')\r\n",
-        "ax1.set_xlabel('Epochs', size=16)\r\n",
-        "ax1.set_ylabel('Loss', size=16)\r\n",
-        "ax1.legend()\r\n",
-        "\r\n",
-        "ax2.plot(epochs, accuracy, 'r', label='Training')\r\n",
-        "ax2.plot(epochs, val_accuracy, 'b', label='Validation')\r\n",
-        "ax2.set_xlabel('Epochs', size=16)\r\n",
-        "ax2.set_ylabel('Accuracy', size=16)\r\n",
-        "ax2.legend()\r\n",
+        "loss = history.history['loss']\n",
+        "val_loss = history.history['val_loss']\n",
+        "accuracy = history.history['accuracy']\n",
+        "val_accuracy = history.history['val_accuracy']\n",
+        "epochs = range(len(loss))\n",
+        "\n",
+        "fig = plt.figure(figsize=(12,6))\n",
+        "gs = fig.add_gridspec(1, 2)\n",
+        "ax1 = fig.add_subplot(gs[0, 0])\n",
+        "ax2 = fig.add_subplot(gs[0, 1])\n",
+        "\n",
+        "ax1.plot(epochs, loss, 'r', label='Training')\n",
+        "ax1.plot(epochs, val_loss, 'b', label='Validation')\n",
+        "ax1.set_xlabel('Epochs', size=16)\n",
+        "ax1.set_ylabel('Loss', size=16)\n",
+        "ax1.legend()\n",
+        "\n",
+        "ax2.plot(epochs, accuracy, 'r', label='Training')\n",
+        "ax2.plot(epochs, val_accuracy, 'b', label='Validation')\n",
+        "ax2.set_xlabel('Epochs', size=16)\n",
+        "ax2.set_ylabel('Accuracy', size=16)\n",
+        "ax2.legend()\n",
         "plt.show()"
       ],
-      "execution_count": 18,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "display_data",
@@ -1530,6 +1575,15 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "oUBeYcCVwCg5"
+      },
+      "source": [
+        ">Testing Model on samples from validation data"
+      ]
+    },
+    {
       "cell_type": "code",
       "metadata": {
         "colab": {
@@ -1540,48 +1594,47 @@
         "outputId": "1d965ee6-b63c-45a2-df74-59c890964cb0"
       },
       "source": [
-        "\r\n",
-        "for example in range(len(X_train[50:100])):\r\n",
-        "\r\n",
-        "    mfccs_sample = X_test[example]\r\n",
-        "    out_sample = Y_test[example]\r\n",
-        "\r\n",
-        "    Model.evaluate(mfccs_sample.reshape((-1, 13, 130, 1)), out_sample.reshape((-1, 5, 1)))\r\n",
-        "    predicted = Model.predict(X_test[example].reshape((-1, 13, 130, 1)))\r\n",
-        "    print(predicted)\r\n",
-        "\r\n",
-        "    fig, (ax2, ax3) = plt.subplots(1, 2)\r\n",
-        "\r\n",
-        "    emotions = [\"\", 'neutral', 'happy', 'sad', 'angry', 'fearful']\r\n",
-        "\r\n",
-        "    plt.figure(figsize=(10, 4))\r\n",
-        "    librosa.display.specshow(mfccs_sample.reshape(13, 130))\r\n",
-        "    plt.colorbar()\r\n",
-        "    plt.tight_layout()\r\n",
-        "    # ax1.imshow((mfccs_sample.reshape(13, 130)), cmap=\"gray\")\r\n",
-        "    # ax1.set_title(\"Speech MFCC\")\r\n",
-        "\r\n",
-        "    ax2.imshow((out_sample.reshape(5, 1)), cmap=\"gray\")\r\n",
-        "    ax2.tick_params(axis='x',\r\n",
-        "                    which='both',\r\n",
-        "                    bottom=False,\r\n",
-        "                    top=False,\r\n",
-        "                    labelbottom=False)\r\n",
-        "    ax2.set_yticklabels(emotions)\r\n",
-        "    ax2.set_title(\"Speech Emotion\")\r\n",
-        "\r\n",
-        "    ax3.imshow((predicted.reshape(5, 1)), cmap=\"gray\")\r\n",
-        "    ax3.tick_params(axis='x',\r\n",
-        "                    which='both',\r\n",
-        "                    bottom=False,\r\n",
-        "                    top=False,\r\n",
-        "                    labelbottom=False)\r\n",
-        "    ax3.set_yticklabels(emotions)\r\n",
-        "    ax3.set_title(\"Predicted Emotion\")\r\n",
-        "\r\n",
+        "for example in range(50, 100):\n",
+        "\n",
+        "    mfccs_sample = X_test[example]\n",
+        "    out_sample = Y_test[example]\n",
+        "\n",
+        "    Model.evaluate(mfccs_sample.reshape((-1, 13, 130, 1)), out_sample.reshape((-1, 5, 1)))\n",
+        "    predicted = Model.predict(X_test[example].reshape((-1, 13, 130, 1)))\n",
+        "    print(predicted)\n",
+        "\n",
+        "    fig, (ax2, ax3) = plt.subplots(1, 2)\n",
+        "\n",
+        "    emotions = [\"\", 'neutral', 'happy', 'sad', 'angry', 'fearful']\n",
+        "\n",
+        "    plt.figure(figsize=(10, 4))\n",
+        "    librosa.display.specshow(mfccs_sample.reshape(13, 130))\n",
+        "    plt.colorbar()\n",
+        "    plt.tight_layout()\n",
+        "    # ax1.imshow((mfccs_sample.reshape(13, 130)), cmap=\"gray\")\n",
+        "    # ax1.set_title(\"Speech MFCC\")\n",
+        "\n",
+        "    ax2.imshow((out_sample.reshape(5, 1)), cmap=\"gray\")\n",
+        "    ax2.tick_params(axis='x',\n",
+        "                    which='both',\n",
+        "                    bottom=False,\n",
+        "                    top=False,\n",
+        "                    labelbottom=False)\n",
+        "    ax2.set_yticklabels(emotions)\n",
+        "    ax2.set_title(\"Speech Emotion\")\n",
+        "\n",
+        "    ax3.imshow((predicted.reshape(5, 1)), cmap=\"gray\")\n",
+        "    ax3.tick_params(axis='x',\n",
+        "                    which='both',\n",
+        "                    bottom=False,\n",
+        "                    top=False,\n",
+        "                    labelbottom=False)\n",
+        "    ax3.set_yticklabels(emotions)\n",
+        "    ax3.set_title(\"Predicted Emotion\")\n",
+        "\n",
         "    plt.show()"
       ],
-      "execution_count": 19,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -3291,6 +3344,15 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "SBdSnFrzxqWL"
+      },
+      "source": [
+        "> Plotting confusion matrix"
+      ]
+    },
+    {
       "cell_type": "code",
       "metadata": {
         "colab": {
@@ -3301,19 +3363,19 @@
         "outputId": "67401694-4626-41eb-d6e4-765a8c5faceb"
       },
       "source": [
-        "from sklearn.metrics import confusion_matrix\r\n",
-        "import seaborn as sn\r\n",
-        "import pandas as pd\r\n",
-        "\r\n",
-        "Y_pred = np.argmax(Model.predict(X_test), axis=1)\r\n",
-        "confusion =  confusion_matrix(Y_test.argmax(axis=1), Y_pred)\r\n",
-        "\r\n",
-        "df_confusion = pd.DataFrame(confusion, index = ['calm', 'happy', 'sad', 'angry', 'fearful'],\r\n",
-        "                     columns = ['calm', 'happy', 'sad', 'angry', 'fearful'])\r\n",
-        "plt.figure(figsize = (10,7))\r\n",
+        "from sklearn.metrics import confusion_matrix\n",
+        "import seaborn as sn\n",
+        "import pandas as pd\n",
+        "\n",
+        "Y_pred = np.argmax(Model.predict(X_test), axis=1)\n",
+        "confusion =  confusion_matrix(Y_test.argmax(axis=1), Y_pred)\n",
+        "\n",
+        "df_confusion = pd.DataFrame(confusion, index = ['calm', 'happy', 'sad', 'angry', 'fearful'],\n",
+        "                     columns = ['calm', 'happy', 'sad', 'angry', 'fearful'])\n",
+        "plt.figure(figsize = (10,7))\n",
         "sn.heatmap(df_confusion, annot=True)"
       ],
-      "execution_count": 20,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "execute_result",
@@ -3354,7 +3416,7 @@
       "source": [
         "tf.keras.models.save_model(Model, '/content/drive/MyDrive/model_speech_jl_rav')"
       ],
-      "execution_count": 21,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
